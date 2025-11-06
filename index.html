@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese N5 Vocabulary - Lesson 1</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the app */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .japanese-text {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 700;
+            color: #1a202c; /* dark gray/black */
+        }
+        .vocab-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+        .vocab-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Style for the responsive table on mobile */
+        @media (max-width: 768px) {
+            /* Ensure the display of the count column is handled for mobile */
+            .responsive-table th, .responsive-table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            /* Styling for the hidden headers on mobile */
+            .responsive-table td[data-header]:before {
+                content: attr(data-header);
+                font-weight: 700;
+                color: #4f46e5;
+                margin-right: 0.5rem;
+                display: block;
+                font-size: 0.8rem;
+                padding-bottom: 0.1rem;
+            }
+            .responsive-table th.mobile-only, .responsive-table td.mobile-only {
+                display: none; /* Hide the count column when full block display is active */
+            }
+            .responsive-table th {
+                text-align: left;
+                padding-top: 0.5rem;
+                padding-bottom: 0.1rem;
+                font-size: 0.8rem;
+                color: #4f46e5;
+                background-color: #eef2ff;
+            }
+            .responsive-table td {
+                padding-top: 0.25rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .responsive-table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #d1d5db;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+                background-color: white;
+            }
+            .responsive-table thead {
+                display: none; /* Hide standard headers on mobile */
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8 p-4 bg-white rounded-xl shadow-lg">
+            <h1 class="text-4xl font-bold text-indigo-700">🇯🇵 Nihongo Gakushū</h1>
+            <p class="text-xl text-gray-600 mt-1">Japanese Vocabulary Learning Center</p>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row gap-4">
+            <div class="w-full md:w-1/3">
+                <label for="lesson-select" class="block text-sm font-medium text-gray-700 mb-1">Select Lesson:</label>
+                <select id="lesson-select" onchange="loadLesson()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-base">
+                    <!-- Options will be added by JavaScript -->
+                </select>
+            </div>
+            <div class="w-full md:w-2/3">
+                <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">Search Vocabulary:</label>
+                <input type="text" id="search-input" onkeyup="filterVocabulary()" placeholder="Search Japanese, English, or Bengali..." class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-base">
+            </div>
+        </div>
+
+        <!-- Vocabulary Table Container -->
+        <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
+            <h2 id="lesson-title" class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2"></h2>
+            
+            <table class="min-w-full divide-y divide-gray-200 responsive-table">
+                <thead class="bg-indigo-50">
+                    <tr>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">#</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Japanese Word</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Romanization (Pronunciation)</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">English Meaning</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">বাংলা অর্থ (Bengali)</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Kanji</th>
+                    </tr>
+                </thead>
+                <tbody id="vocab-body" class="bg-white divide-y divide-gray-200">
+                    <!-- Vocabulary rows will be injected here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div> <footer class="mt-12 pt-8 border-t border-gray-200 text-center">
+            <p class="text-sm text-gray-600">
+                Created by 
+                <a href="https://www.facebook.com/profile.php?id=61577114914775" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="font-semibold text-indigo-600 hover:text-indigo-800 transition duration-150">
+                    Maruf
+                </a>
+            </p>
+            
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="[ADD_LINK_HERE]" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+                    Facebook
+                </a>
+                <a href="[ADD_LINK_HERE]" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+                    Twitter
+                </a>
+                <a href="[ADD_LINK_HERE]" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+                    LinkedIn
+                </a>
+            </div>
+        </footer>
+        </div> 
+
+    <script>
+        // --- 1. DATA STRUCTURE (The file you will update to add new lessons) ---
+
+        const lessons = [
+            {
+                id: 'n5-l1',
+                title: 'Lesson 1: Self-Introduction, People & Places (N5)',
+                vocabulary: [
+                    { japanese: 'わたし', romanji: 'Watashi', bengaliPronunciation: 'ওয়া-তা-শি', english: 'I, Me', bengali: 'আমি', kanji: '私' },
+                    { japanese: 'わたしたち', romanji: 'Watashitachi', bengaliPronunciation: 'ওয়া-তা-শি-তা-চি', english: 'We, Us', bengali: 'আমরা', kanji: '私達' },
+                    { japanese: 'あなた', romanji: 'Anata', bengaliPronunciation: 'আ-না-তা', english: 'You', bengali: 'তুমি/আপনি', kanji: '' },
+                    { japanese: 'あのひと', romanji: 'Ano hito', bengaliPronunciation: 'আ-নো হি-তো', english: 'That person', bengali: 'ঐ ব্যক্তি (সাধারণ)', kanji: '人' },
+                    { japanese: 'あのかた', romanji: 'Ano kata', bengaliPronunciation: 'আ-নো কা-তা', english: 'That person (polite)', bengali: 'ঐ ব্যক্তি (সম্মানজনক)', kanji: '方' },
+                    { japanese: '〜さん', romanji: '〜san', bengaliPronunciation: 'সান', english: 'Mr./Mrs./Ms. (Suffix)', bengali: '~ সাহেব/সাহেবা', kanji: '' },
+                    { japanese: '〜ちゃん', romanji: '〜chan', bengaliPronunciation: 'চ্যান', english: 'Suffix (for children/females, affectionate)', bengali: '~ (ছোট মেয়ে বা শিশুদের নামের শেষে স্নেহার্থে)', kanji: '' },
+                    { japanese: '〜くん', romanji: '〜kun', bengaliPronunciation: 'কুন', english: 'Suffix (for boys/males, familiar)', bengali: '~ (ছেলেদের নামের শেষে ঘনিষ্ঠতা বা স্নেহার্থে)', kanji: '' },
+                    { japanese: 'みなさん', romanji: 'Minasan', bengaliPronunciation: 'মি-না-সান', english: 'Everyone', bengali: 'সকলে/সবাই', kanji: '' },
+                    { japanese: '〜じん', romanji: '〜jin', bengaliPronunciation: 'জিন', english: 'Suffix (to denote nationality)', bengali: '~ দেশের মানুষ/নাগরিক', kanji: '人' },
+                    { japanese: 'せんせい', romanji: 'Sensei', bengaliPronunciation: 'সেন-সেই', english: 'Teacher (used for others)', bengali: 'শিক্ষক/শিক্ষিকা (পেশা হিসেবে অন্যদের ক্ষেত্রে ব্যবহার)', kanji: '先生' },
+                    { japanese: 'きょうし', romanji: 'Kyoushi', bengaliPronunciation: 'কিউ-শি', english: 'Teacher (one\'s own profession)', bengali: 'শিক্ষক/শিক্ষিকা (নিজের পেশা হিসেবে ব্যবহার)', kanji: '教師' },
+                    { japanese: 'がくせい', romanji: 'Gakusei', bengaliPronunciation: 'গা-কু-সেই', english: 'Student', bengali: 'ছাত্র/ছাত্রী', kanji: '学生' },
+                    { japanese: 'かいしゃ', romanji: 'Kaisha', bengaliPronunciation: 'কাই-শা', english: 'Company', bengali: 'কোম্পানি/সংস্থা', kanji: '会社' },
+                    { japanese: 'かいしゃいん', romanji: 'Kaishain', bengaliPronunciation: 'কাই-শা-ইন', english: 'Company employee', bengali: 'কোম্পানির কর্মী', kanji: '会社員' },
+                    { japanese: 'しゃいん', romanji: 'Shain', bengaliPronunciation: 'শা-ইন', english: 'Employee (of specific company)', bengali: 'কর্মী (নির্দিষ্ট কোম্পানির জন্য)', kanji: '員' },
+                    { japanese: 'ぎんこう', romanji: 'Ginkou', bengaliPronunciation: 'গিন-কোউ', english: 'Bank', bengali: 'ব্যাংক', kanji: '銀行' },
+                    { japanese: 'ぎんこういん', romanji: 'Ginkouin', bengaliPronunciation: 'গিন-কোউ-ইন', english: 'Bank employee', bengali: 'ব্যাংক কর্মী', kanji: '은행원' },
+                    { japanese: 'いしゃ', romanji: 'Isha', bengaliPronunciation: 'ই-শা', english: 'Doctor', bengali: 'ডাক্তার/চিকিৎসক', kanji: '医者' },
+                    { japanese: 'けんきゅうしゃ', romanji: 'Kenkyuusha', bengaliPronunciation: 'কেন-কিউ-শা', english: 'Researcher', bengali: 'গবেষক', kanji: '研究者' },
+                    { japanese: 'エンジニア', romanji: 'Enjinia', bengaliPronunciation: 'এন-জি-নি-আ', english: 'Engineer', bengali: 'ইঞ্জিনিয়ার', kanji: '' },
+                    { japanese: 'だいがく', romanji: 'Daigaku', bengaliPronunciation: 'দাই-গা-কু', english: 'University', bengali: 'বিশ্ববিদ্যালয়', kanji: '大学' },
+                    { japanese: 'びょういん', romanji: 'Byouin', bengaliPronunciation: 'বিয়ৌ-ইন', english: 'Hospital', bengali: 'হাসপাতাল', kanji: '病院' },
+                    { japanese: 'でんき', romanji: 'Denki', bengaliPronunciation: 'দেন-কি', english: 'Electricity, Light', bengali: 'বিদ্যুৎ, আলো', kanji: '電気' },
+                    { japanese: 'だれ (どなた)', romanji: 'Dare (Donata)', bengaliPronunciation: 'দা-রে (দো-না-তা)', english: 'Who (Donata is polite)', bengali: 'কে (দো-না-তা হলো সম্মানজনক রূপ)', kanji: '' },
+                    { japanese: '〜さい', romanji: '〜sai', bengaliPronunciation: 'সাই', english: 'Age suffix (~years old)', bengali: '~ বছর বয়স', kanji: '歳' },
+                    { japanese: 'なんさい (おいくつ)', romanji: 'Nansai (O-ikutsu)', bengaliPronunciation: 'নান-সাই (ও-ই-কু-ত্সু)', english: 'How old? (O-ikutsu is polite)', bengali: 'কত বয়স?', kanji: '何歳' },
+                    { japanese: 'はい', romanji: 'Hai', bengaliPronunciation: 'হাই', english: 'Yes', bengali: 'হ্যাঁ', kanji: '' },
+                    { japanese: 'いいえ', romanji: 'Iie', bengaliPronunciation: 'ই-য়ে', english: 'No', bengali: 'না', kanji: '' },
+                    { japanese: 'はじめまして', romanji: 'Hajimemashite', bengaliPronunciation: 'হা-জি-মে-মা-শি-তে', english: 'How do you do? (First time meeting)', bengali: 'আপনার সাথে পরিচিত হয়ে ভালো লাগলো', kanji: '' },
+                    { japanese: 'どうぞよろしくおねがいします', romanji: 'Douzo yoroshiku onegaishimasu', bengaliPronunciation: 'দোউ-জো ইয়ো-রো-শি-কু ও-নে-গাই-শি-মা-সু', english: 'Nice to meet you (polite closing remark)', bengali: 'আপনার সহযোগিতা/শুভেচ্ছা কামনা করি', kanji: '宜しくお願いします' },
+                    { japanese: '〜からきました', romanji: '〜kara kimashita', bengaliPronunciation: '~ কা-রা কি-মা-শি-তা', english: 'Came from...', bengali: '~ থেকে এসেছি', kanji: '来ました' },
+                    { japanese: 'しつれいですが', romanji: 'Shitsurei desu ga', bengaliPronunciation: 'শি-ত্সু-রেই দে-সু গা', english: 'Excuse me, but...', bengali: 'দুঃখিত, কিন্তু.../মাফ করবেন, তবে...', kanji: '失礼ですが' },
+                    { japanese: 'おなまえは', romanji: 'O-namae wa', bengaliPronunciation: 'ও-না-মা-এ ওয়া', english: 'Your name?', bengali: 'আপনার নাম?', kanji: '名前' },
+                    { japanese: 'こちらは 〜さんです', romanji: 'Kochira wa 〜san desu', bengaliPronunciation: 'কো-চি-রা ওয়া ~ সান দে-সু', english: 'This is Mr./Ms. ~ (Introducing someone)', bengali: 'ইনি হলেন ~ সাহেব/সাহেবা', kanji: '' },
+                    { japanese: 'アメリカ', romanji: 'Amerika', bengaliPronunciation: 'আ-মে-রি-কা', english: 'America (USA)', bengali: 'আমেরিকা', kanji: '' },
+                    { japanese: 'イギリス', romanji: 'Igirisu', bengaliPronunciation: 'ই-গি-রি-সু', english: 'Britain (UK)', bengali: 'ব্রিটেন/ইংল্যান্ড', kanji: '' },
+                    { japanese: 'インド', romanji: 'Indo', bengaliPronunciation: 'ইন-দো', english: 'India', bengali: 'ভারত', kanji: '' },
+                    { japanese: 'インドネシア', romanji: 'Indoneshia', bengaliPronunciation: 'ইন-দো-নে-শি-আ', english: 'Indonesia', bengali: 'ইন্দোনেশিয়া', kanji: '' },
+                    { japanese: 'かんこく', romanji: 'Kankoku', bengaliPronunciation: 'কান-কো-কু', english: 'South Korea', bengali: 'দক্ষিণ কোরিয়া', kanji: '韓国' },
+                    { japanese: 'タイ', romanji: 'Tai', bengaliPronunciation: 'তাই', english: 'Thailand', bengali: 'থাইল্যান্ড', kanji: '' },
+                    { japanese: 'ちゅうごく', romanji: 'Chuugoku', bengaliPronunciation: 'চুউ-গো-কু', english: 'China', bengali: 'চীন', kanji: '中国' },
+                    { japanese: 'ドイツ', romanji: 'Doitsu', bengaliPronunciation: 'দো-ই-ত্সু', english: 'Germany', bengali: 'জার্মানি', kanji: '' },
+                    { japanese: 'にほん', romanji: 'Nihon', bengaliPronunciation: 'নি-হোন', english: 'Japan', bengali: 'জাপান', kanji: '日本' },
+                    { japanese: 'フランス', romanji: 'Furansu', bengaliPronunciation: 'ফু-রা-ন-সু', english: 'France', bengali: 'ফ্রান্স', kanji: '' },
+                    { japanese: 'ブラジル', romanji: 'Burajiru', bengaliPronunciation: 'বু-রা-জি-রু', english: 'Brazil', bengali: 'ব্রাজিল', kanji: '' },
+                    { japanese: 'IMC / パワーでんき/ブラジリア', romanji: 'IMC / Pawaa Denki / Burajiria', bengaliPronunciation: 'আই-এম-সি / পা-ওয়া দেন-কি / বু-রা-জি-রি-আ', english: 'Names (Company/Shop/Place)', bengali: 'নাম (কোম্পানি/দোকান/স্থানের নাম)', kanji: '' },
+                    { japanese: 'AKC', romanji: 'AKC', bengaliPronunciation: 'এই-কে-শি', english: 'Name (Company/Place)', bengali: 'নাম (কোম্পানি/স্থানের নাম)', kanji: '' },
+                    { japanese: 'こうべびょういん', romanji: 'Koube Byouin', bengaliPronunciation: 'কোউ-বে বিয়ৌ-ইন', english: 'Kobe Hospital', bengali: 'কোবে হাসপাতাল', kanji: '神戸病院' },
+                    { japanese: 'さくらだいがく', romanji: 'Sakura Daigaku', bengaliPronunciation: 'সা-কু-রা দাই-গা-কু', english: 'Sakura University', bengali: 'সাকুরা বিশ্ববিদ্যালয়', kanji: '桜大学' },
+                ]
+            },
+
+{
+    id: 'n5-l2',
+    title: 'Lesson 2: Objects, Possessions & Demostratives (これ/それ/あれ)',
+    vocabulary: [
+        { japanese: 'これ', romanji: 'Kore', bengaliPronunciation: 'কো-রে', english: 'This', bengali: 'এটি (বক্তার কাছাকাছি)', kanji: '' },
+        { japanese: 'それ', romanji: 'Sore', bengaliPronunciation: 'সো-রে', english: 'That', bengali: 'ওটি (শ্রোতার কাছাকাছি)', kanji: '' },
+        { japanese: 'あれ', romanji: 'Are', bengaliPronunciation: 'আ-রে', english: 'That (over there)', bengali: 'সেটি (উভয়ের থেকে দূরে)', kanji: '' },
+        { japanese: 'この〜', romanji: 'Kono〜', bengaliPronunciation: 'কো-নো', english: 'This [noun]...', bengali: 'এই [বিশেষ্য] (বিশেষ্যের আগে ব্যবহৃত)', kanji: '' },
+        { japanese: 'その〜', romanji: 'Sono〜', bengaliPronunciation: 'সো-নো', english: 'That [noun]...', bengali: 'ঐ [বিশেষ্য] (বিশেষ্যের আগে ব্যবহৃত)', kanji: '' },
+        { japanese: 'あの〜', romanji: 'Ano〜', bengaliPronunciation: 'আ-নো', english: 'That [noun] over there...', bengali: 'সেই [বিশেষ্য] (বিশেষ্যের আগে, দূরবর্তী বোঝাতে)', kanji: '' },
+        { japanese: 'ほん', romanji: 'Hon', bengaliPronunciation: 'হোন', english: 'Book', bengali: 'বই', kanji: '本' },
+        { japanese: 'じしょ', romanji: 'Jisho', bengaliPronunciation: 'জি-শো', english: 'Dictionary', bengali: 'অভিধান', kanji: '辞書' },
+        { japanese: 'ざっし', romanji: 'Zasshi', bengaliPronunciation: 'জা-শি', english: 'Magazine', bengali: 'ম্যাগাজিন/পত্রিকা', kanji: '雑誌' },
+        { japanese: 'しんぶん', romanji: 'Shinbun', bengaliPronunciation: 'শিন-বুন', english: 'Newspaper', bengali: 'সংবাদপত্র/খবরের কাগজ', kanji: '新聞' },
+        { japanese: 'ノート', romanji: 'Nōto', bengaliPronunciation: 'নোউ-তো', english: 'Notebook', bengali: 'নোটবই/খাতা', kanji: '' },
+        { japanese: 'てちょう', romanji: 'Techou', bengaliPronunciation: 'তে-চোউ', english: 'Notebook/Diary', bengali: 'ডায়েরি/পকেট নোটবই', kanji: '手帳' },
+        { japanese: 'めいし', romanji: 'Meishi', bengaliPronunciation: 'মেই-শি', english: 'Business card', bengali: 'ব্যবসায়িক কার্ড/ভিজিটিং কার্ড', kanji: '名刺' },
+        { japanese: 'カード', romanji: 'Kādo', bengaliPronunciation: 'কা-দো', english: 'Card', bengali: 'কার্ড (যেমন: ক্রেডিট কার্ড)', kanji: '' },
+        { japanese: 'えんぴつ', romanji: 'Enpitsu', bengaliPronunciation: 'এন-পি-ত্সু', english: 'Pencil', bengali: 'পেনসিল', kanji: '鉛筆' },
+        { japanese: 'ボールペン', romanji: 'Bōrupen', bengaliPronunciation: 'বোউ-রু-পেন', english: 'Ballpoint pen', bengali: 'বলপয়েন্ট কলম', kanji: '' },
+        { japanese: 'シャープペンシル', romanji: 'Shaapupenshiru', bengaliPronunciation: 'শা-পু-পেন-শি-রু', english: 'Mechanical pencil', bengali: 'মেকানিক্যাল পেনসিল', kanji: '' },
+        { japanese: 'かぎ', romanji: 'Kagi', bengaliPronunciation: 'কা-গি', english: 'Key', bengali: 'চাবি', kanji: '' },
+        { japanese: 'とけい', romanji: 'Tokei', bengaliPronunciation: 'তো-কেই', english: 'Clock/Watch', bengali: 'ঘড়ি', kanji: '時計' },
+        { japanese: 'かさ', romanji: 'Kasa', bengaliPronunciation: 'কা-সা', english: 'Umbrella', bengali: 'ছাতা', kanji: '' },
+        { japanese: 'かばん', romanji: 'Kaban', bengaliPronunciation: 'কা-বান', english: 'Bag', bengali: 'ব্যাগ/বস্তা', kanji: '' },
+        { japanese: 'テレビ', romanji: 'Terebi', bengaliPronunciation: 'তে-রে-বি', english: 'Television', bengali: 'টেলিভিশন', kanji: '' },
+        { japanese: 'ラジオ', romanji: 'Rajio', bengaliPronunciation: 'রা-জি-ও', english: 'Radio', bengali: 'রেডিও', kanji: '' },
+        { japanese: 'カメラ', romanji: 'Kamera', bengaliPronunciation: 'কা-মে-রা', english: 'Camera', bengali: 'ক্যামেরা', kanji: '' },
+        { japanese: 'コンピューター', romanji: 'Konpyūtā', bengaliPronunciation: 'কো-ন-পিউ-তা-', english: 'Computer', bengali: 'কম্পিউটার', kanji: '' },
+        { japanese: 'じどうしゃ', romanji: 'Jidousha', bengaliPronunciation: 'জি-দোউ-শা', english: 'Automobile/Car', bengali: 'মোটরগাড়ি/গাড়ি', kanji: '自動車' },
+        { japanese: 'つくえ', romanji: 'Tsukue', bengaliPronunciation: 'ত্সু-কু-এ', english: 'Desk', bengali: 'টেবিল/ডেস্ক', kanji: '机' },
+        { japanese: 'チョコレート', romanji: 'Chokorēto', bengaliPronunciation: 'চো-কো-রে-তো', english: 'Chocolate', bengali: 'চকলেট', kanji: '' },
+        { japanese: 'コーヒー', romanji: 'Kōhii', bengaliPronunciation: 'কোউ-হি-ই', english: 'Coffee', bengali: 'কফি', kanji: '' },
+        { japanese: 'おみやげ', romanji: 'Omiyage', bengaliPronunciation: 'ও-মি-য়া-গে', english: 'Souvenir/Gift', bengali: 'স্মারক/উপহার', kanji: '' },
+        { japanese: 'えいご', romanji: 'Eigo', bengaliPronunciation: 'এই-গো', english: 'English language', bengali: 'ইংরেজি ভাষা', kanji: '英語' },
+        { japanese: 'にほんご', romanji: 'Nihongo', bengaliPronunciation: 'নি-হো-ন-গো', english: 'Japanese language', bengali: 'জাপানি ভাষা', kanji: '日本語' },
+        { japanese: '〜ご', romanji: '〜go', bengaliPronunciation: 'গো', english: 'Suffix (for language)', bengali: '~ ভাষা', kanji: '語' },
+        { japanese: 'なん', romanji: 'Nan', bengaliPronunciation: 'নান', english: 'What', bengali: 'কী/কি', kanji: '何' },
+        { japanese: 'そう', romanji: 'Sou', bengaliPronunciation: 'সোউ', english: 'That is so', bengali: 'ঐটা/ওটা ঠিক', kanji: '' },
+        { japanese: 'あ', romanji: 'A', bengaliPronunciation: 'আ', english: 'Oh! (Exclamation)', bengali: 'আ!/ওহ!', kanji: '' },
+        { japanese: 'あのう', romanji: 'Anō', bengaliPronunciation: 'আ-নোউ', english: 'Um... / Well... (Hesitation/polite pause)', bengali: 'উম... / ধরুন... (ভদ্রভাবে মনোযোগ আকর্ষণের জন্য)', kanji: '' },
+        { japanese: 'えつ', romanji: 'Etsu', bengaliPronunciation: 'এ-ত্সু', english: 'Eh? / What?! (Surprise)', bengali: 'কি?/হাঁ! (আচমকা বিস্ময় বোঝাতে)', kanji: '' },
+        { japanese: 'どうぞ', romanji: 'Douzo', bengaliPronunciation: 'দোউ-জো', english: 'Please (offering something)', bengali: 'নিন/অনুগ্রহ করে', kanji: '' },
+        { japanese: 'どうもありがとうございます', romanji: 'Dōmo arigatō gozaimasu', bengaliPronunciation: 'দোউ-মো আ-রি-গা-তোউ গো-জাই-মা-সু', english: 'Thank you very much (very polite)', bengali: 'আপনাকে অসংখ্য ধন্যবাদ', kanji: '' },
+        { japanese: 'そうですか', romanji: 'Sō desu ka', bengaliPronunciation: 'সোউ দে-সু কা', english: 'Is that so? / I see.', bengali: 'তাই নাকি?/বুঝলাম', kanji: '' },
+        { japanese: 'ちがいます', romanji: 'Chigaimasu', bengaliPronunciation: 'চি-গাই-মা-সু', english: 'It is different/It is wrong', bengali: 'এটা ভিন্ন/এটা ভুল', kanji: '違' },
+        { japanese: 'こちらこそどうぞよろしくおねがいします', romanji: 'Kochira koso dōzo yoroshiku onegaishimasu', bengaliPronunciation: 'কো-চি-রা কো-সো দোউ-জো ইয়ো-রো-শি-কু ও-নে-গাই-শি-মা-সু', english: 'Likewise, I\'m pleased to meet you (Reply to a greeting)', bengali: 'বরং আমারই আপনাকে পেয়ে ভালো লাগলো (শুভেচ্ছার প্রত্যুত্তর)', kanji: '' },
+        { japanese: 'これからおせわになります', romanji: 'Kore kara o-sewa ni narimasu', bengaliPronunciation: 'কো-রে কা-রা ও-সে-ওয়া নি না-রি-মা-সু', english: 'I look forward to working with you (future cooperation)', bengali: 'এখন থেকে আপনার সাহায্য পাবো/আপনার সাথে কাজ করতে আগ্রহী', kanji: '' },
+    ]
+},
+
+            {
+                id: 'n5-l2',
+                title: 'Lesson 2: Core Nouns and Items (N5)',
+                vocabulary: [
+                    // Add new words here following the structure:
+                    // { japanese: 'ことば', romanji: 'Kotoba', bengaliPronunciation: 'কো-তো-বা', english: 'Word/Language', bengali: 'শব্দ/ভাষা', kanji: '言葉' },
+                ]
+            },
+        ];
+
+        let currentLesson = lessons[0];
+
+        // --- 2. JAVASCRIPT LOGIC ---
+
+        /**
+         * Initializes the lesson selector and loads the first lesson.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            populateLessonSelector();
+            // Set the default selection to the first lesson if none is selected
+            const defaultLessonId = currentLesson ? currentLesson.id : lessons[0].id;
+            document.getElementById('lesson-select').value = defaultLessonId;
+            loadLesson(defaultLessonId);
+        });
+
+        /**
+         * Populates the <select> element with options from the lessons array.
+         */
+        function populateLessonSelector() {
+            const selector = document.getElementById('lesson-select');
+            // Clear existing options first (important if this function is called multiple times)
+            selector.innerHTML = ''; 
+            lessons.forEach(lesson => {
+                const option = document.createElement('option');
+                option.value = lesson.id;
+                option.textContent = lesson.title;
+                selector.appendChild(option);
+            });
+        }
+
+        /**
+         * Loads and displays the vocabulary for the selected lesson.
+         * @param {string} lessonId - The ID of the lesson to load.
+         */
+        function loadLesson(lessonId) {
+            const selectedId = lessonId || document.getElementById('lesson-select').value;
+            // Find the lesson, or default to the first one if the ID is missing
+            currentLesson = lessons.find(l => l.id === selectedId) || lessons[0];
+
+            document.getElementById('lesson-title').textContent = currentLesson.title;
+            // Clear any previous search term
+            document.getElementById('search-input').value = '';
+            
+            // Render the full list for the new lesson
+            renderVocabulary(currentLesson.vocabulary);
+        }
+
+        /**
+         * Renders the vocabulary list into the table body.
+         * @param {Array<Object>} vocabList - The list of vocabulary objects to render.
+         */
+        function renderVocabulary(vocabList) {
+            const tbody = document.getElementById('vocab-body');
+            tbody.innerHTML = ''; // Clear previous rows
+
+            if (vocabList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">No vocabulary found for this lesson or search criteria.</td></tr>';
+                return;
+            }
+
+            vocabList.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-indigo-50 transition duration-150 ease-in-out';
+                
+                // The index + 1 provides the sequential count
+                const count = index + 1;
+
+                // Format the Romanization column to include the Bengali Pronunciation in parenthesis
+                const romanjiDisplay = `${item.romanji}${item.bengaliPronunciation ? ` (${item.bengaliPronunciation})` : ''}`;
+
+
+                // For mobile view, we hide the count as the layout shifts to block structure
+                row.innerHTML = `
+                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium text-gray-500">${count}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="japanese-text text-lg md:text-xl">${item.japanese}</span>
+                        <div class="text-sm text-gray-500 md:hidden pt-1">(${item.romanji})</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-normal" data-header="Romanization">${romanjiDisplay}</td>
+                    <td class="px-6 py-4 whitespace-normal" data-header="English Meaning">${item.english}</td>
+                    <td class="px-6 py-4 whitespace-normal" data-header="বাংলা অর্থ">${item.bengali}</td>
+                    <td class="px-6 py-4 whitespace-nowrap japanese-text text-sm" data-header="Kanji">${item.kanji || '—'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        /**
+         * Filters the current vocabulary list based on the search input.
+         */
+        function filterVocabulary() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filteredVocab = currentLesson.vocabulary.filter(item => {
+                // Check all fields for the search term, including the new bengaliPronunciation
+                return (
+                    item.japanese.toLowerCase().includes(searchTerm) ||
+                    item.romanji.toLowerCase().includes(searchTerm) ||
+                    (item.bengaliPronunciation && item.bengaliPronunciation.toLowerCase().includes(searchTerm)) ||
+                    item.english.toLowerCase().includes(searchTerm) ||
+                    item.bengali.toLowerCase().includes(searchTerm) ||
+                    item.kanji.toLowerCase().includes(searchTerm)
+                );
+            });
+
+            // Re-render with the filtered list. The index will automatically create the sequential count.
+            renderVocabulary(filteredVocab);
+        }
+
+    </script>
+</body>
+</html>
