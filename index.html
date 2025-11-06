@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Japanese N5 Vocabulary - Lesson 1</title>
-    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -25,11 +24,13 @@
         .vocab-card:hover {
             transform: translateY(-2px);
         }
+        
         /* IMPORTANT CHANGE: Use display: none for zero gap when collapsed */
         .detail-row {
             display: none; 
             background-color: #eef2ff;
         }
+        
         /* Desktop: Show as table row when expanded */
         .detail-row.expanded {
             display: table-row; 
@@ -38,6 +39,7 @@
             transition: transform 0.3s ease-in-out; /* Keep icon rotation smooth */
             transform: rotate(90deg);
         }
+        
         /* Style for the responsive table on mobile */
         @media (max-width: 768px) {
             /* Ensure the display of the count column is handled for mobile */
@@ -83,16 +85,29 @@
             .responsive-table thead {
                 display: none; /* Hide standard headers on mobile */
             }
+            
+            /* 🔥 THE CRITICAL FIX: Ensure the detail row is hidden when not expanded. */
+            /* Use a selector with higher specificity to override other block displays on mobile. */
+            .responsive-table .detail-row {
+                 display: none !important;
+            }
+            
             /* Mobile: Detail row needs to be block when expanded */
             .detail-row.expanded {
-                display: block; 
+                display: block !important; /* Use !important here for robust override */
                 margin-top: 0.5rem; /* Add a small gap to separate from main block */
                 border: 1px solid #d1d5db;
                 border-radius: 0.5rem;
                 background-color: white; /* Ensure consistent background inside the detail block */
+                padding: 0; /* Remove padding from the tr itself */
             }
+            
+            /* Re-add padding to the cell content for the detail row on mobile */
             .detail-row td {
-                padding: 0;
+                display: block; /* Ensure the TD inside the detail TR behaves as a block */
+                width: 100%;
+                padding: 1rem; /* Add necessary padding */
+                border-bottom: none; /* Remove border from the TD inside the detail TR */
             }
         }
     </style>
@@ -100,19 +115,16 @@
 <body class="p-4 md:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <!-- Header -->
         <header class="text-center mb-8 p-4 bg-white rounded-xl shadow-lg">
             <h1 class="text-4xl font-bold text-indigo-700">🇯🇵 Nihongo Gakushū</h1>
             <p class="text-xl text-gray-600 mt-1">Japanese Vocabulary Learning Center</p>
         </header>
 
-        <!-- Control Panel -->
         <div class="bg-white p-6 rounded-xl shadow-lg mb-8 flex flex-col md:flex-row gap-4">
             <div class="w-full md:w-1/3">
                 <label for="lesson-select" class="block text-sm font-medium text-gray-700 mb-1">Select Lesson:</label>
                 <select id="lesson-select" onchange="loadLesson()" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-base">
-                    <!-- Options will be added by JavaScript -->
-                </select>
+                    </select>
             </div>
             <div class="w-full md:w-2/3">
                 <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">Search Vocabulary:</label>
@@ -120,7 +132,6 @@
             </div>
         </div>
 
-        <!-- Vocabulary Table Container -->
         <div class="bg-white p-6 rounded-xl shadow-lg overflow-x-auto">
             <h2 id="lesson-title" class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2"></h2>
             
@@ -129,44 +140,43 @@
                     <tr>
                         <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider w-8">#</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Japanese Word</th>
-                        <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider w-12">Details</th> <!-- NEW ICON COLUMN -->
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Romanization (Pronunciation)</th>
+                        <th scope="col" class="px-3 py-3 text-center text-xs font-medium text-indigo-700 uppercase tracking-wider w-12">Details</th> <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Romanization (Pronunciation)</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">English Meaning</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">বাংলা অর্থ (Bengali)</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider w-16">Kanji</th>
                     </tr>
                 </thead>
                 <tbody id="vocab-body" class="bg-white divide-y divide-gray-200">
-                    <!-- Vocabulary rows will be injected here -->
-                </tbody>
+                    </tbody>
             </table>
         </div>
     </div>
 
-</div> <footer class="mt-12 pt-8 border-t border-gray-200 text-center">
-            <p class="text-sm text-gray-600">
-                Created by 
-                <a href="https://www.facebook.com/maruf32003" 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   class="font-semibold text-indigo-600 hover:text-indigo-800 transition duration-150">
-                    Maruf
-                </a>
-            </p>
-            
-            <div class="flex justify-center gap-6 mt-4">
-                <a href="https://www.facebook.com/maruf32003" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
-                    Facebook
-                </a>
-               <a href="https://wa.me/8801815753403" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
-                    WhatsApp
-                </a>
-                <a href="https://www.linkedin.com/in/maruf32003/" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
-                    LinkedIn
-                </a>
-            </div>
-        </footer>
-        </div> 
+</div> 
+<footer class="mt-12 pt-8 border-t border-gray-200 text-center">
+    <p class="text-sm text-gray-600">
+        Created by 
+        <a href="https://www.facebook.com/maruf32003" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="font-semibold text-indigo-600 hover:text-indigo-800 transition duration-150">
+            Maruf
+        </a>
+    </p>
+    
+    <div class="flex justify-center gap-6 mt-4">
+        <a href="https://www.facebook.com/maruf32003" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+            Facebook
+        </a>
+       <a href="https://wa.me/8801815753403" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+            WhatsApp
+        </a>
+        <a href="https://www.linkedin.com/in/maruf32003/" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-indigo-600">
+            LinkedIn
+        </a>
+    </div>
+</footer>
+    </div> 
 
     <script>
         // --- 1. DATA STRUCTURE (The file you will update to add new lessons) ---
@@ -228,7 +238,8 @@
         { japanese: 'さくらだいがく', romanji: 'Sakura Daigaku', bengaliPronunciation: 'সা-কু-রা দাই-গা-কু', english: 'Sakura University', kanji: '桜大学', bengali: 'সাকুরা বিশ্ববিদ্যালয়', details: { explanation: 'The proper name for Sakura University.', bengaliExplanation: 'সাকুরা বিশ্ববিদ্যালয়ের বিশেষ নাম।', examples: [{ sentence: 'わたしは さくらだいがく の がくせい です。', romanji: 'Watashi wa Sakura Daigaku no gakusei desu.', meaning: 'আমি সাকুরা বিশ্ববিদ্যালয়ের ছাত্র/ছাত্রী ।' }, { sentence: 'さくらだいがく は どこ ですか。', romanji: 'Sakura Daigaku wa doko desu ka.', meaning: 'সাকুরা বিশ্ববিদ্যালয় কোথায়?' }] } },
     ]
 },
-           {
+
+{
     id: 'n5-l2',
     title: 'Lesson 2: Objects, Possessions & Demostratives (これ/それ/あれ)',
     vocabulary: [
@@ -278,56 +289,8 @@
         { japanese: 'これからおせわになります', romanji: 'Kore kara o-sewa ni narimasu', bengaliPronunciation: 'কো-রে কা-রা ও-সে-ওয়া নি না-রি-মা-সু', english: 'I look forward to working with you (future cooperation)', kanji: '', bengali: 'এখন থেকে আপনার সাহায্য পাবো/আপনার সাথে কাজ করতে আগ্রহী', details: { explanation: 'Used at the end of a self-introduction when you expect to be working with or receiving help from the person in the future.', bengaliExplanation: 'আত্ম-পরিচয়ের শেষে ব্যবহৃত হয় যখন আপনি ভবিষ্যতে সেই ব্যক্তির সাথে কাজ করার বা তাদের কাছ থেকে সাহায্য পাওয়ার আশা করেন।', examples: [{ sentence: 'これからおせわになります。どうぞよろしく。', romanji: 'Kore kara o-sewa ni narimasu. Douzo yoroshiku.', meaning: 'এখন থেকে আপনার সাহায্য পাবো। আপনার সহযোগিতা কামনা করি ।' }, { sentence: 'はじめまして。これからおせわになります。', romanji: 'Hajimemashite. Kore kara o-sewa ni narimasu.', meaning: 'প্রথম আলাপ। এখন থেকে আপনার সাহায্য পাবো ।' }] } },
     ]
 },
-            {
-                id: 'n5-l2',
-                title: 'Lesson 2: Objects, Possessions & Demostratives (これ/それ/あれ)',
-                vocabulary: [
-                    { japanese: 'これ', romanji: 'Kore', bengaliPronunciation: 'コ-レ', english: 'This', bengali: 'এটি (বক্তার কাছাকাছি)', kanji: '', details: { explanation: 'Used to refer to an object near the speaker.', bengaliExplanation: 'বক্তার কাছাকাছি কোনো বস্তুকে বোঝাতে ব্যবহৃত হয়।', examples: [{ sentence: 'これ は ほんです。', romanji: 'Kore wa hon desu.', meaning: 'এটি একটি বই ।' }] } },
-                    { japanese: 'それ', romanji: 'Sore', bengaliPronunciation: 'ソ-レ', english: 'That', bengali: 'ওটি (শ্রোতার কাছাকাছি)', kanji: '', details: { explanation: 'Used to refer to an object near the listener.', bengaliExplanation: 'শ্রোতার কাছাকাছি কোনো বস্তুকে বোঝাতে ব্যবহৃত হয়।', examples: [{ sentence: 'それ は あなたの かばん ですか。', romanji: 'Sore wa anata no kaban desu ka.', meaning: 'ওটি কি আপনার ব্যাগ?' }] } },
-                    { japanese: 'あれ', romanji: 'Are', bengaliPronunciation: 'ア-レ', english: 'That (over there)', bengali: 'সেটি (উভয়ের থেকে দূরে)', kanji: '', details: { explanation: 'Used to refer to an object far away from both the speaker and the listener.', bengaliExplanation: 'বক্তা ও শ্রোতা উভয়ের থেকে দূরে থাকা কোনো বস্তুকে বোঝাতে ব্যবহৃত হয়।', examples: [{ sentence: 'あれ は なん ですか。', romanji: 'Are wa nan desu ka.', meaning: 'ঐটি কী?' }] } },
-                    { japanese: 'この〜', romanji: 'Kono〜', bengaliPronunciation: 'コ-ノ', english: 'This [noun]...', bengali: 'এই [বিশেষ্য] (বিশেষ্যের আগে ব্যবহৃত)', kanji: '', details: { explanation: 'A modifier used before a noun to mean "this" noun (near the speaker).', bengaliExplanation: 'একটি সংশোধক যা একটি বিশেষ্যের আগে ব্যবহৃত হয় এবং বক্তার কাছাকাছি "এই" বিশেষ্যটিকে বোঝায়।', examples: [{ sentence: 'この ほんです।', romanji: 'Kono hon desu.', meaning: 'এই বইটি ।' }] } },
-                    { japanese: 'その〜', romanji: 'Sono〜', bengaliPronunciation: 'ソ-ノ', english: 'That [noun]...', bengali: 'ঐ [বিশেষ্য] (বিশেষ্যের আগে ব্যবহৃত)', kanji: '', details: { explanation: 'A modifier used before a noun to mean "that" noun (near the listener).', bengaliExplanation: 'একটি সংশোধক যা একটি বিশেষ্যের আগে ব্যবহৃত হয় এবং শ্রোতার কাছাকাছি "ঐ" বিশেষ্যটিকে বোঝায়।', examples: [{ sentence: 'その じしょ です。', romanji: 'Sono jisho desu.', meaning: 'ঐ অভিধানটি ।' }] } },
-                    { japanese: 'あの〜', romanji: 'Ano〜', bengaliPronunciation: 'ア-ノ', english: 'That [noun] over there...', bengali: 'সেই [বিশেষ্য] (বিশেষ্যের আগে, দূরবর্তী বোঝাতে)', kanji: '', details: { explanation: 'A modifier used before a noun to mean "that" noun (far from both).', bengaliExplanation: 'একটি সংশোধক যা একটি বিশেষ্যের আগে ব্যবহৃত হয় এবং উভয়ের থেকে দূরে থাকা "সেই" বিশেষ্যটিকে বোঝায়।', examples: [{ sentence: 'あの とけい は だれ の ですか。', romanji: 'Ano tokei wa dare no desu ka.', meaning: 'ঐ ঘড়িটি কার?' }] } },
-                    { japanese: 'ほん', romanji: 'Hon', bengaliPronunciation: 'ホ-ン', english: 'Book', bengali: 'বই', kanji: '本', details: { explanation: 'General word for book.', bengaliExplanation: 'বইয়ের জন্য সাধারণ শব্দ।', examples: [{ sentence: 'これは わたしの ほんです。', romanji: 'Kore wa watashi no hon desu.', meaning: 'এটি আমার বই ।' }] } },
-                    { japanese: 'じしょ', romanji: 'Jisho', bengaliPronunciation: 'ジ-ショ', english: 'Dictionary', bengali: 'অভিধান', kanji: '辞書', details: { explanation: 'Dictionary.', bengaliExplanation: 'অভিধান।', examples: [{ sentence: 'その じしょ は にほんご の です。', romanji: 'Sono jisho wa Nihongo no desu.', meaning: 'ঐ অভিধানটি জাপানি ভাষার ।' }] } },
-                    { japanese: 'ざっし', romanji: 'Zasshi', bengaliPronunciation: 'ザ-シ', english: 'Magazine', bengali: 'ম্যাগাজিন/পত্রিকা', kanji: '雑誌', details: { explanation: 'Magazine.', bengaliExplanation: 'ম্যাগাজিন বা পত্রিকা।', examples: [{ sentence: 'この ざっし は アメリカ の です。', romanji: 'Kono zasshi wa Amerika no desu.', meaning: 'এই ম্যাগাজিনটি আমেরিকার ।' }] } },
-                    { japanese: 'しんぶん', romanji: 'Shinbun', bengaliPronunciation: 'シ-ン-ブ-ン', english: 'Newspaper', bengali: 'সংবাদপত্র/খবরের কাগজ', kanji: '新聞', details: { explanation: 'Newspaper.', bengaliExplanation: 'সংবাদপত্র বা খবরের কাগজ।', examples: [{ sentence: 'まいにち しんぶん を よみます。', romanji: 'Mainichi shinbun o yomimasu.', meaning: 'আমি প্রতিদিন সংবাদপত্র পড়ি ।' }] } },
-                    { japanese: 'ノート', romanji: 'Nōto', bengaliPronunciation: 'ノウ-ト', english: 'Notebook', bengali: 'নোটবই/খাতা', kanji: '', details: { explanation: 'Notebook or notes (from the English word).', bengaliExplanation: 'নোটবই বা টীকা (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'それは わたしの ノート です。', romanji: 'Sore wa watashi no nooto desu.', meaning: 'ওটা আমার নোটবই ।' }] } },
-                    { japanese: 'てちょう', romanji: 'Techou', bengaliPronunciation: 'テ-チオウ', english: 'Notebook/Diary', bengali: 'ডায়েরি/পকেট নোটবই', kanji: '手帳', details: { explanation: 'Pocket notebook or personal organizer/diary.', bengaliExplanation: 'পকেট নোটবই বা ব্যক্তিগত ডায়েরি।', examples: [{ sentence: 'あなたの てちょう は どれ ですか。', romanji: 'Anata no techou wa dore desu ka.', meaning: 'আপনার ডায়েরিটি কোনটি?' }] } },
-                    { japanese: 'めいし', romanji: 'Meishi', bengaliPronunciation: 'メ-イ-シ', english: 'Business card', bengali: 'ব্যবসায়িক কার্ড/ভিজিটিং কার্ড', kanji: '名刺', details: { explanation: 'Business card.', bengaliExplanation: 'ব্যবসায়িক কার্ড বা ভিজিটিং কার্ড।', examples: [{ sentence: 'これは だれ の めいし ですか。', romanji: 'Kore wa dare no meishi desu ka.', meaning: 'এটি কার ভিজিটিং কার্ড?' }] } },
-                    { japanese: 'カード', romanji: 'Kādo', bengaliPronunciation: 'カ-ド', english: 'Card', bengali: 'কার্ড (যেমন: ক্রেডিট কার্ড)', kanji: '', details: { explanation: 'Card (e.g., credit card, debit card).', bengaliExplanation: 'কার্ড (যেমন: ক্রেডিট কার্ড, ডেবিট কার্ড)।', examples: [{ sentence: 'その カード は ぎんこう の カード です。', romanji: 'Sono kaado wa ginkou no kaado desu.', meaning: 'ঐ কার্ডটি ব্যাংকের কার্ড ।' }] } },
-                    { japanese: 'えんぴつ', romanji: 'Enpitsu', bengaliPronunciation: 'エ-ン-ピ-ツゥ', english: 'Pencil', bengali: 'পেনসিল', kanji: '鉛筆', details: { explanation: 'Pencil.', bengaliExplanation: 'পেনসিল।', examples: [{ sentence: 'えんぴつ で かきます。', romanji: 'Enpitsu de kakimasu.', meaning: 'পেনসিল দিয়ে লিখি ।' }] } },
-                    { japanese: 'ボールペン', romanji: 'Bōrupen', bengaliPronunciation: 'ボウ-ル-ペ-ン', english: 'Ballpoint pen', bengali: 'বলপয়েন্ট কলম', kanji: '', details: { explanation: 'Ballpoint pen (from the English word).', bengaliExplanation: 'বলপয়েন্ট কলম (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'この ボールペン は わたし の です。', romanji: 'Kono booru-pen wa watashi no desu.', meaning: 'এই বলপয়েন্ট কলমটি আমার ।' }] } },
-                    { japanese: 'シャープペンシル', romanji: 'Shaapupenshiru', bengaliPronunciation: 'シャ-プ-ペ-ン-シ-ル', english: 'Mechanical pencil', bengali: 'মেকানিক্যাল পেনসিল', kanji: '', details: { explanation: 'Mechanical pencil.', bengaliExplanation: 'মেকানিক্যাল পেনসিল।', examples: [{ sentence: 'シャープペンシル を かします。', romanji: 'Shaapupenshiru o kashimasu.', meaning: 'মেকানিক্যাল পেনসিল ধার দেই ।' }] } },
-                    { japanese: 'かぎ', romanji: 'Kagi', bengaliPronunciation: 'カ-ギ', english: 'Key', bengali: 'চাবি', kanji: '', details: { explanation: 'Key.', bengaliExplanation: 'চাবি।', examples: [{ sentence: 'それは くるま の かぎ です。', romanji: 'Sore wa kuruma no kagi desu.', meaning: 'ওটা গাড়ির চাবি ।' }] } },
-                    { japanese: 'とけい', romanji: 'Tokei', bengaliPronunciation: 'ト-ケ-イ', english: 'Clock/Watch', bengali: 'ঘড়ি', kanji: '時計', details: { explanation: 'Clock or watch.', bengaliExplanation: 'দেয়াল ঘড়ি বা হাত ঘড়ি।', examples: [{ sentence: 'あなたの とけい は とても きれい です。', romanji: 'Anata no tokei wa totemo kirei desu.', meaning: 'আপনার ঘড়িটি খুব সুন্দর ।' }] } },
-                    { japanese: 'かさ', romanji: 'Kasa', bengaliPronunciation: 'カ-サ', english: 'Umbrella', bengali: 'ছাতা', kanji: '', details: { explanation: 'Umbrella.', bengaliExplanation: 'ছাতা।', examples: [{ sentence: 'この かさ は だれ の ですか。', romanji: 'Kono kasa wa dare no desu ka.', meaning: 'এই ছাতাটি কার?' }] } },
-                    { japanese: 'かばん', romanji: 'Kaban', bengaliPronunciation: 'カ-バン', english: 'Bag', bengali: 'ব্যাগ/বস্তা', kanji: '', details: { explanation: 'Bag, briefcase, or backpack.', bengaliExplanation: 'ব্যাগ, ব্রিফকেস বা ব্যাকপ্যাক।', examples: [{ sentence: 'わたしの かばん は あそこ です。', romanji: 'Watashi no kaban wa asoko desu.', meaning: 'আমার ব্যাগটা ঐখানে ।' }] } },
-                    { japanese: 'テレビ', romanji: 'Terebi', bengaliPronunciation: 'テ-レ-ビ', english: 'Television', bengali: 'টেলিভিশন', kanji: '', details: { explanation: 'Television set (from the English word).', bengaliExplanation: 'টেলিভিশন সেট (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'うち に テレビ が あります。', romanji: 'Uchi ni terebi ga arimasu.', meaning: 'বাড়িতে টিভি আছে ।' }] } },
-                    { japanese: 'ラジオ', romanji: 'Rajio', bengaliPronunciation: 'ラ-ジ-オ', english: 'Radio', bengali: 'রেডিও', kanji: '', details: { explanation: 'Radio (from the English word).', bengaliExplanation: 'রেডিও (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'くるま の なか で ラジオ を ききます。', romanji: 'Kuruma no naka de rajio o kikimasu.', meaning: 'গাড়ির ভেতরে রেডিও শুনি ।' }] } },
-                    { japanese: 'カメラ', romanji: 'Kamera', bengaliPronunciation: 'カ-メ-ラ', english: 'Camera', bengali: 'ক্যামেরা', kanji: '', details: { explanation: 'Camera (from the English word).', bengaliExplanation: 'ক্যামেরা (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'あの カメラ は たかい です。', romanji: 'Ano kamera wa takai desu.', meaning: 'ঐ ক্যামেরাটি দামি ।' }] } },
-                    { japanese: 'コンピューター', romanji: 'Konpyūtā', bengaliPronunciation: 'コ-ン-ピ-ュ-タ-', english: 'Computer', bengali: 'কম্পিউটার', kanji: '', details: { explanation: 'Computer (from the English word).', bengaliExplanation: 'কম্পিউটার (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'わたしの コンピューター は あたらしい です。', romanji: 'Watashi wa konpyuutaa wa atarashii desu.', meaning: 'আমার কম্পিউটারটি নতুন ।' }] } },
-                    { japanese: 'じどうしゃ', romanji: 'Jidousha', bengaliPronunciation: 'ジ-ド-ウ-シヤ', english: 'Automobile/Car', bengali: 'মোটরগাড়ি/গাড়ি', kanji: '自動車', details: { explanation: 'Automobile or car.', bengaliExplanation: 'মোটরগাড়ি বা গাড়ি।', examples: [{ sentence: 'あれは わたしの じどうしゃ です。', romanji: 'Are wa watashi no jidousha desu.', meaning: 'ঐটি আমার গাড়ি ।' }] } },
-                    { japanese: 'つくえ', romanji: 'Tsukue', bengaliPronunciation: 'ツ-ク-エ', english: 'Desk', bengali: 'টেবিল/ডেস্ক', kanji: '机', details: { explanation: 'Desk or a writing table.', bengaliExplanation: 'ডেস্ক বা লেখার টেবিল।', examples: [{ sentence: 'この つくえ は おおきい です。', romanji: 'Kono tsukue wa ookii desu.', meaning: 'এই ডেস্কটি বড় ।' }] } },
-                    { japanese: 'チョコレート', romanji: 'Chokorēto', bengaliPronunciation: 'チヨ-コ-レ-ト', english: 'Chocolate', bengali: 'চকলেট', kanji: '', details: { explanation: 'Chocolate (from the English word).', bengaliExplanation: 'চকলেট (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'チョコレート を たべます。', romanji: 'Chokoreeto o tabemasu.', meaning: 'চকলেট খাই ।' }] } },
-                    { japanese: 'コーヒー', romanji: 'Kōhii', bengaliPronunciation: 'コウ-ヒ-イ', english: 'Coffee', bengali: 'কফি', kanji: '', details: { explanation: 'Coffee (from the English word).', bengaliExplanation: 'কফি (ইংরেজি শব্দ থেকে এসেছে)।', examples: [{ sentence: 'まいにち コーヒー を のみます。', romanji: 'Mainichi koohii o nomimasu.', meaning: 'প্রতিদিন কফি পান করি ।' }] } },
-                    { japanese: 'おみやげ', romanji: 'Omiyage', bengaliPronunciation: 'オ-ミ-या-ゲ', english: 'Souvenir/Gift', bengali: 'স্মারক/উপহার', kanji: 'お土産', details: { explanation: 'A souvenir or gift, especially one brought back from a trip.', bengaliExplanation: 'একটি স্যুভেনি বা উপহার, বিশেষ করে ভ্রমণের পর নিয়ে আসা।', examples: [{ sentence: 'これは きょうと の おみやげ です。', romanji: 'Kore wa Kyouto no omiyage desu.', meaning: 'এটি কিয়োটোর (Kyoto) স্যুভেনি ।' }] } },
-                    { japanese: 'えいご', romanji: 'Eigo', bengaliPronunciation: 'エ-イ-ゴ', english: 'English language', bengali: 'ইংরেজি ভাষা', kanji: '英語', details: { explanation: 'The English language. The suffix 語 (go) means "language."', bengaliExplanation: 'ইংরেজি ভাষা। প্রত্যয় 語 (go) এর অর্থ "ভাষা"।', examples: [{ sentence: 'あのひと は えいご を はなします。', romanji: 'Ano hito wa Eigo o hanashimasu.', meaning: 'ঐ ব্যক্তিটি ইংরেজিতে কথা বলে ।' }] } },
-                    { japanese: 'にほんご', romanji: 'Nihongo', bengaliPronunciation: 'ニ-ホ-ン-ゴ', english: 'Japanese language', bengali: 'জাপানি ভাষা', kanji: '日本語', details: { explanation: 'The Japanese language.', bengaliExplanation: 'জাপানি ভাষা।', examples: [{ sentence: 'にほんご は むずかしい です。', romanji: 'Nihongo wa muzukashii desu.', meaning: 'জাপানি ভাষা কঠিন ।' }] } },
-                    { japanese: '〜ご', romanji: '〜go', bengaliPronunciation: 'ゴ', english: 'Suffix (for language)', bengali: '~ ভাষা', kanji: '語', details: { explanation: 'Suffix attached to a country/region to indicate the language (e.g., フランスご - Furansu-go = French).', bengaliExplanation: 'একটি প্রত্যয় যা ভাষা বোঝাতে দেশ/অঞ্চলের সাথে যুক্ত হয় (যেমন: フランスご - Furansu-go = ফরাসি ভাষা)।', examples: [{ sentence: 'かんこくご は むずかしい です。', romanji: 'Kankoku-go wa muzukashii desu.', meaning: 'কোরিয়ান ভাষা কঠিন ।' }] } },
-                    { japanese: 'なん', romanji: 'Nan', bengaliPronunciation: 'ナ-ン', english: 'What', bengali: 'কী/কি', kanji: '何', details: { explanation: 'Used to ask "what." Read as なん (nan) before a word starting with T, D, N (e.g., なに/なん), or a counter, and なに (nani) otherwise.', bengaliExplanation: '"কী" জিজ্ঞাসা করতে ব্যবহৃত হয়। T, D, N বা কোনো গণনাকারীর আগে এলে এটি なん (nan) হিসাবে এবং অন্যথায় なに (nani) হিসাবে পড়া হয়।', examples: [{ sentence: 'あれは なん ですか。', romanji: 'Are wa nan desu ka.', meaning: 'ঐটা কী?' }, { sentence: 'あなたの なまえは なん ですか。', romanji: 'Anata no namae wa nan desu ka.', meaning: 'আপনার নাম কী?' }] } },
-                    { japanese: 'そう', romanji: 'Sou', bengaliPronunciation: 'ソウ', english: 'That is so', bengali: 'ঐটা/ওটা ঠিক', kanji: '', details: { explanation: 'A casual way to agree or confirm something. Often used in the phrase そうです (sou desu - That is right).', bengaliExplanation: 'কিছুতে সম্মতি জানাতে বা নিশ্চিত করতে ব্যবহৃত নৈমিত্তিক উপায়। প্রায়শই そうです (sou desu - এটা ঠিক) বাক্যাংশে ব্যবহৃত হয়।', examples: [{ sentence: 'そう ですか。', romanji: 'Sou desu ka.', meaning: 'তাই নাকি? / বুঝলাম ।' }, { sentence: 'はい、そうです。', romanji: 'Hai, sou desu.', meaning: 'হ্যাঁ, ঠিক ।' }] } },
-                    { japanese: 'あ', romanji: 'A', bengaliPronunciation: 'ア', english: 'Oh! (Exclamation)', bengali: 'আ!/ওহ!', kanji: '', details: { explanation: 'A short exclamation of surprise or realization.', bengaliExplanation: 'বিস্ময় বা উপলব্ধি প্রকাশের একটি সংক্ষিপ্ত আবেগসূচক শব্দ।', examples: [{ sentence: 'あ、わすれました。', romanji: 'A, wasuremashita.', meaning: 'ওহ, ভুলে গেছি ।' }] } },
-                    { japanese: 'あのう', romanji: 'Anō', bengaliPronunciation: 'ア-ノウ', english: 'Um... / Well... (Hesitation/polite pause)', bengji: 'উম... / ধরুন... (ভদ্রভাবে মনোযোগ আকর্ষণের জন্য)', kanji: '', details: { explanation: 'Used to politely get someone\'s attention or when hesitating before speaking.', bengaliExplanation: 'ভদ্রভাবে কারো মনোযোগ আকর্ষণ করতে বা কথা বলার আগে ইতস্তত করার জন্য ব্যবহৃত হয়।', examples: [{ sentence: 'あのう、すみません。', romanji: 'Anou, sumimasen.', meaning: 'উম, মাফ করবেন ।' }] } },
-                    { japanese: 'えつ', romanji: 'Etsu', bengaliPronunciation: 'エ-ツゥ', english: 'Eh? / What?! (Surprise)', bengali: 'কি?/হাঁ! (আচমকা বিস্ময় বোঝাতে)', kanji: '', details: { explanation: 'Used to express sudden surprise or to question something unexpected.', bengaliExplanation: 'হঠাৎ বিস্ময় প্রকাশ করতে বা অপ্রত্যাশিত কিছু নিয়ে প্রশ্ন করতে ব্যবহৃত হয়।', examples: [{ sentence: 'えつ、ほんとう ですか。', romanji: 'Etsu, hontou desu ka.', meaning: 'কি, সত্যি?' }] } },
-                    { japanese: 'どうぞ', romanji: 'Douzo', bengaliPronunciation: 'ドゥオウ-ゾ', english: 'Please (offering something)', bengali: 'নিন/অনুগ্রহ করে', kanji: '', details: { explanation: 'Used when offering something to someone (e.g., "Please have a seat," "Please take this").', bengaliExplanation: 'কাউকে কিছু দেওয়ার সময় ব্যবহৃত হয় (যেমন: "দয়া করে বসুন," "দয়া করে এটি নিন")।', examples: [{ sentence: 'どうぞ、コーヒー です。', romanji: 'Douzo, koohii desu.', meaning: 'নিন, কফি ।' }] } },
-                    { japanese: 'どうもありがとうございます', romanji: 'Dōmo arigatō gozaimasu', bengaliPronunciation: 'ドゥオウ-モ ア-リ-ガ-トウ ゴ-ザイ-マ-ス', english: 'Thank you very much (very polite)', bengali: 'আপনাকে অসংখ্য ধন্যবাদ', kanji: '', details: { explanation: 'The most formal and polite way to express gratitude.', bengaliExplanation: 'কৃতজ্ঞতা প্রকাশ করার সবচেয়ে আনুষ্ঠানিক এবং বিনয়ী উপায়।', examples: [{ sentence: 'どうもありがとうございます。', romanji: 'Doumo arigatou gozaimasu.', meaning: 'আপনাকে অসংখ্য ধন্যবাদ ।' }] } },
-                    { japanese: 'そうですか', romanji: 'Sō desu ka', bengaliPronunciation: 'ソウ デ-ス カ', english: 'Is that so? / I see.', bengali: 'তাই নাকি?/বুঝলাম', kanji: '', details: { explanation: 'Used to confirm understanding or to show polite interest in what the speaker has just said.', bengaliExplanation: 'বোঝার বিষয়টি নিশ্চিত করতে বা বক্তা যা বলেছেন তাতে বিনয়ী আগ্রহ দেখাতে ব্যবহৃত হয়।', examples: [{ sentence: 'わたしは いしゃ です。そうですか。', romanji: 'Watashi wa isha desu. Sou desu ka.', meaning: 'আমি ডাক্তার। তাই নাকি/বুঝলাম ।' }] } },
-                    { japanese: 'ちがいます', romanji: 'Chigaimasu', bengaliPronunciation: 'チ-ガイ-マ-ス', english: 'It is different/It is wrong', bengali: 'এটা ভিন্ন/এটা ভুল', kanji: '違', details: { explanation: 'The polite negative form, meaning "It is not," "That\'s wrong," or "It is different."', bengaliExplanation: 'বিনয়ী নেতিবাচক রূপ, যার অর্থ "এটা নয়," "এটা ভুল," বা "এটা ভিন্ন।"', examples: [{ sentence: 'いいえ、ちがいます。', romanji: 'Iie, chigaimasu.', meaning: 'না, এটা ভুল ।' }] } },
-                    { japanese: 'こちらこそどうぞよろしくおねがいします', romanji: 'Kochira koso dōzo yoroshiku onegaishimasu', bengaliPronunciation: 'コ-チ-ラ コ-ソ ドゥオウ-ゾ イ-ヨ-ロ-シ-ク オ-ネ-ガ-イ-シ-マ-ス', english: 'Likewise, I\'m pleased to meet you (Reply to a greeting)', bengali: 'বরং আমারই আপনাকে পেয়ে ভালো লাগলো (শুভেচ্ছার প্রত্যুত্তর)', kanji: '', details: { explanation: 'A polite and reciprocal reply to someone who has just said どうぞよろしくおねがいします (Douzo yoroshiku onegaishimasu).', bengaliExplanation: 'যিনি সদ্য どうぞよろしくおねがいします (Douzo yoroshiku onegaishimasu) বলেছেন, তাকে দেওয়া একটি বিনয়ী এবং পারস্পরিক উত্তর।', examples: [{ sentence: 'A: よろしくおねがいします。 B: こちらこそどうぞよろしくおねがいします。', romanji: 'A: Yoroshiku onegaishimasu. B: Kochira koso douzo yoroshiku onegaishimasu.', meaning: 'A: আপনার সহযোগিতা কামনা করি। B: বরং আমারই আপনার সহযোগিতা কামনা করা উচিত ।' }] } },
-                    { japanese: 'これからおせわになります', romanji: 'Kore kara o-sewa ni narimasu', bengaliPronunciation: 'コ-レ カ-ラ オ-セ-ワ ニ ナ-リ-マ-ス', english: 'I look forward to working with you (future cooperation)', bengali: 'এখন থেকে আপনার সাহায্য পাবো/আপনার সাথে কাজ করতে আগ্রহী', kanji: '', details: { explanation: 'Used at the end of a self-introduction when you expect to be working with or receiving help from the person in the future.', bengaliExplanation: 'আত্ম-পরিচয়ের শেষে ব্যবহৃত হয় যখন আপনি ভবিষ্যতে সেই ব্যক্তির সাথে কাজ করার বা তাদের কাছ থেকে সাহায্য পাওয়ার আশা করেন।', examples: [{ sentence: 'これからおせわになります。どうぞよろしく。', romanji: 'Kore kara o-sewa ni narimasu. Douzo yoroshiku.', meaning: 'এখন থেকে আপনার সাহায্য পাবো। আপনার সহযোগিতা কামনা করি ।' }] } },
-                ]
-            },
+
+
             
         ];
 
